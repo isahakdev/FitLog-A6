@@ -53,7 +53,7 @@ const Hero = () => {
         {/* Right Image */}
         <div className="relative hidden min-h-[460px] flex-1 lg:block">
           <Image
-            src="/images/banner.png"
+            src="/Images/banner.png"
             alt="FitLog workout illustration"
             fill
             priority
