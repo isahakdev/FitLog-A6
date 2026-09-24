@@ -1,3 +1,4 @@
+// FitLog Workout Library
 import { getWorkouts } from "@/lib/api";
 import WorkoutCard from "./WorkoutCard";
 
