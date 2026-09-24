@@ -26,7 +26,7 @@ const Navbar = () => {
                     aria-label="FitLog Home"
                 >
                     <Image
-                        src="/images/logo.png"
+                        src="/Images/logo.png"
                         alt="FitLog logo"
                         width={24}
                         height={24}
