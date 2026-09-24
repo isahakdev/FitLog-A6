@@ -1,50 +1,128 @@
-//improbe footer
+//footer
 import Image from "next/image";
 
-const Hero = () => {
-    return (
-        <section className="border-b border-zinc-800 bg-[#0d0f12]">
-            <div className="mx-auto grid max-w-[1320px] items-center gap-10 px-5 py-14 sm:px-8 lg:grid-cols-2 lg:gap-16 lg:px-10 lg:py-20">
+const Footer = () => {
+  return (
+    <footer className="border-t border-zinc-800 bg-[#0d0f12]">
+      <div className="mx-auto max-w-[1320px] px-5 py-12 sm:px-8 lg:px-10">
 
-                {/* Hero Content */}
-                <div>
-                    <p className="mb-4 text-sm font-semibold tracking-[0.2em] text-lime-400">
-                        WORKOUT LIBRARY
-                    </p>
+        {/* Footer Main */}
+        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
 
-                    <h1 className="max-w-2xl text-4xl font-black leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
-                        TRAIN WITH INTENT.
-                        <br />
-                        <span className="text-lime-400">LOG EVERY SET.</span>
-                    </h1>
+          {/* Brand */}
+          <div>
+            <div className="mb-5 flex items-center gap-3">
+              <Image
+                src="/Images/logo.png"
+                alt="FitLog logo"
+                width={45}
+                height={45}
+                className="h-11 w-11 object-contain"
+              />
 
-                    <p className="mt-6 max-w-xl text-base leading-7 text-zinc-400 sm:text-lg">
-                        A focused workout library to help you train with purpose,
-                        track your progress, and build a stronger routine.
-                    </p>
-
-                    <a
-                        href="#library"
-                        className="mt-8 inline-flex rounded-full bg-lime-400 px-6 py-3 text-sm font-bold text-black transition hover:bg-lime-300"
-                    >
-                        Browse Workouts
-                    </a>
-                </div>
-
-                {/* Hero Image */}
-                <div className="relative mx-auto w-full max-w-[560px]">
-                    <Image
-                        src="/images/banner.png"
-                        alt="FitLog workout"
-                        width={900}
-                        height={700}
-                        priority
-                        className="h-auto w-full object-cover"
-                    />
-                </div>
+              <h2 className="text-2xl font-black text-white">
+                Fit<span className="text-lime-400">Log</span>
+              </h2>
             </div>
-        </section>
-    );
+
+            <p className="max-w-sm text-sm leading-6 text-zinc-400">
+              A focused workout library to help you train with purpose,
+              track your progress, and build a stronger routine.
+            </p>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h3 className="mb-5 text-sm font-bold uppercase tracking-wider text-white">
+              Quick Links
+            </h3>
+
+            <ul className="space-y-3 text-sm text-zinc-400">
+              <li>
+                <a
+                  href="/"
+                  className="transition hover:text-lime-400"
+                >
+                  Home
+                </a>
+              </li>
+
+              <li>
+                <a
+                  href="#library"
+                  className="transition hover:text-lime-400"
+                >
+                  Workout Library
+                </a>
+              </li>
+
+              <li>
+                <a
+                  href="/my-plan"
+                  className="transition hover:text-lime-400"
+                >
+                  My Plan
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Workout */}
+          <div>
+            <h3 className="mb-5 text-sm font-bold uppercase tracking-wider text-white">
+              Workout
+            </h3>
+
+            <ul className="space-y-3 text-sm text-zinc-400">
+              <li className="transition hover:text-lime-400">
+                Strength Training
+              </li>
+
+              <li className="transition hover:text-lime-400">
+                Full Body Workout
+              </li>
+
+              <li className="transition hover:text-lime-400">
+                Cardio
+              </li>
+
+              <li className="transition hover:text-lime-400">
+                Mobility
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h3 className="mb-5 text-sm font-bold uppercase tracking-wider text-white">
+              Contact
+            </h3>
+
+            <ul className="space-y-3 text-sm text-zinc-400">
+              <li>Email: support@fitlog.com</li>
+              <li>Available 24/7</li>
+              <li>Train. Track. Improve.</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="my-10 border-t border-zinc-800" />
+
+        {/* Bottom Footer */}
+        <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
+          <p className="text-sm text-zinc-500">
+            © 2026 FitLog. All rights reserved.
+          </p>
+
+          <p className="text-sm text-zinc-500">
+            Train with intent.{" "}
+            <span className="text-lime-400">Log every set.</span>
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
 };
 
-export default Hero;
+export default Footer;
