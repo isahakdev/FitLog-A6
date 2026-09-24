@@ -1,3 +1,4 @@
+// FitLog Navbar Component
 "use client";
 
 import Image from "next/image";
