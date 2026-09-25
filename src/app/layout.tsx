@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     default: "FitLog — Workout Library",
     template: "FitLog — %s",
   },
-  description: "Workout Library",
+  description: "FitLog - Workout Library",
 };
 
 export default function RootLayout({
