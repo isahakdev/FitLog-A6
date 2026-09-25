@@ -12,8 +12,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "FitLog",
-    template: "%s | FitLog",
+    default: "FitLog — Workout Library",
+    template: "FitLog — %s",
   },
   description: "Workout Library",
 };
