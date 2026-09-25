@@ -5,7 +5,7 @@ const Loading = () => {
                 <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-2 border-zinc-700 border-t-[#CCFF00]" />
 
                 <p className="text-sm text-zinc-400">
-                    Loading...
+                    Loading workouts…
                 </p>
             </div>
         </main>

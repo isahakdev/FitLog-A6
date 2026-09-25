@@ -12,6 +12,8 @@ import {
     X,
 } from "lucide-react";
 import { toast } from "react-toastify";
+
+import Loading from "@/components/Loading";
 import { usePlan } from "@/context/PlanContext";
 
 type SortOption = "duration" | "calories" | "rating";
@@ -22,6 +24,7 @@ const MyPlanPage = () => {
         plan,
         saved,
         completed,
+        hydrated,
         markAsDone,
         removeFromPlan,
         removeFromSaved,
@@ -29,6 +32,11 @@ const MyPlanPage = () => {
 
     const [activeTab, setActiveTab] = useState<ActiveTab>("plan");
     const [sortBy, setSortBy] = useState<SortOption>("duration");
+
+    // Show loading state before localStorage data is ready.
+    if (!hydrated) {
+        return <Loading />;
+    }
 
     // Dynamic metrics
     const totalMinutes = plan.reduce(
@@ -192,7 +200,7 @@ const MyPlanPage = () => {
                     )}
                 </div>
 
-                {/* Empty State */}
+                {/* Empty State / Workout List */}
                 {workouts.length === 0 ? (
                     <div className="flex min-h-[195px] items-center justify-center rounded-2xl border border-dashed border-zinc-800 bg-[#1a1d23]">
                         <div className="px-5 text-center">
@@ -215,7 +223,6 @@ const MyPlanPage = () => {
                         </div>
                     </div>
                 ) : (
-                    /* Horizontal Workout Cards */
                     <div className="space-y-4">
                         {sortedWorkouts.map((workout) => {
                             const isCompleted =
@@ -344,25 +351,31 @@ const MyPlanPage = () => {
                                                     if (activeTab === "plan") {
                                                         removeFromPlan(workout.id);
 
-                                                        toast.success("Removed from plan", {
-                                                            icon: (
-                                                                <CheckCircle2
-                                                                    size={20}
-                                                                    className="text-[#55d334]"
-                                                                />
-                                                            ),
-                                                        });
+                                                        toast.success(
+                                                            "Removed from plan",
+                                                            {
+                                                                icon: (
+                                                                    <CheckCircle2
+                                                                        size={20}
+                                                                        className="text-[#55d334]"
+                                                                    />
+                                                                ),
+                                                            }
+                                                        );
                                                     } else {
                                                         removeFromSaved(workout.id);
 
-                                                        toast.success("Removed from saved", {
-                                                            icon: (
-                                                                <CheckCircle2
-                                                                    size={20}
-                                                                    className="text-[#55d334]"
-                                                                />
-                                                            ),
-                                                        });
+                                                        toast.success(
+                                                            "Removed from saved",
+                                                            {
+                                                                icon: (
+                                                                    <CheckCircle2
+                                                                        size={20}
+                                                                        className="text-[#55d334]"
+                                                                    />
+                                                                ),
+                                                            }
+                                                        );
                                                     }
                                                 }}
                                                 className="flex h-9 w-9 items-center justify-center rounded-full text-zinc-400 transition hover:bg-red-500/10 hover:text-red-400"
