@@ -18,8 +18,14 @@ const WorkoutActions = ({ workout }: Props) => {
         addToSaved,
     } = usePlan();
 
-    const isInPlan = plan.some((item) => item.id === workout.id);
-    const isSaved = saved.some((item) => item.id === workout.id);
+    const isInPlan = plan.some(
+        (item) => item.id === workout.id
+    );
+
+    const isSaved = saved.some(
+        (item) => item.id === workout.id
+    );
+
     const planIsFull = plan.length >= 5;
 
     const handlePlan = () => {
@@ -36,6 +42,7 @@ const WorkoutActions = ({ workout }: Props) => {
         }
 
         addToPlan(workout);
+
         toast.success("Added to today's plan");
     };
 
@@ -46,40 +53,47 @@ const WorkoutActions = ({ workout }: Props) => {
         }
 
         addToSaved(workout);
+
         toast.success("Workout saved for later");
     };
 
     return (
-        <div className="flex flex-col items-start gap-3 sm:flex-row">
-            {/* Add to Today's Plan */}
+        <div className="flex w-full flex-col gap-3">
+            {/* Add to Plan */}
             <button
                 type="button"
                 onClick={handlePlan}
-                disabled={planIsFull || isInPlan}
-                className="flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-[#ccff00] px-4 text-xs font-bold text-black transition-colors hover:bg-[#baff00] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#ccff00]"
+                className={`flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold transition-all duration-200 sm:w-auto ${isInPlan
+                        ? "bg-[#668000] text-black"
+                        : "bg-[#ccff00] text-black hover:bg-[#bdf000]"
+                    }`}
             >
-                <CalendarPlus size={15} strokeWidth={2} />
+                <CalendarPlus size={16} strokeWidth={2} />
 
                 <span>
                     {isInPlan
                         ? "Already in today's plan"
-                        : planIsFull
-                            ? "Plan is full"
-                            : "Add to today's plan"}
+                        : "Add to today's plan"}
                 </span>
             </button>
 
-            {/* Save for Later */}
+            {/* Save */}
             <button
                 type="button"
                 onClick={handleSaved}
-                disabled={isSaved}
-                className="flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-[#303640] bg-transparent px-4 text-xs font-bold text-white transition-colors hover:bg-[#171b22] disabled:cursor-not-allowed disabled:opacity-40"
+                className={`flex w-full items-center justify-center gap-2 rounded-xl border px-5 py-3 text-sm font-bold transition-all duration-200 sm:w-auto ${isSaved
+                        ? "border-[#777] bg-transparent text-white"
+                        : "border-white/80 bg-transparent text-white hover:border-[#ccff00] hover:text-[#ccff00]"
+                    }`}
             >
-                <Bookmark size={15} strokeWidth={1.8} />
+                <Bookmark
+                    size={16}
+                    strokeWidth={2}
+                    fill={isSaved ? "currentColor" : "none"}
+                />
 
                 <span>
-                    {isSaved ? "Already saved" : "Save for later"}
+                    {isSaved ? "Saved for later" : "Save for later"}
                 </span>
             </button>
         </div>

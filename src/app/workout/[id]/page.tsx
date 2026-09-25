@@ -28,7 +28,6 @@ export async function generateMetadata({
     params,
 }: PageProps): Promise<Metadata> {
     const { id } = await params;
-
     const workout = await getWorkout(id);
 
     if (!workout) {
@@ -47,7 +46,6 @@ export default async function WorkoutDetails({
     params,
 }: PageProps) {
     const { id } = await params;
-
     const workout = await getWorkout(id);
 
     if (!workout) {
@@ -63,6 +61,7 @@ export default async function WorkoutDetails({
     return (
         <main className="min-h-screen bg-[#0d0f12] px-4 py-8 text-white sm:px-6 sm:py-10 lg:px-8">
             <div className="mx-auto grid max-w-6xl items-start gap-8 lg:grid-cols-2 lg:gap-10">
+                {/* Workout Image */}
                 <div className="relative aspect-square overflow-hidden rounded-3xl border border-[#272b32] bg-[#15181d] lg:sticky lg:top-24">
                     <Image
                         src={workout.image}
@@ -74,7 +73,9 @@ export default async function WorkoutDetails({
                     />
                 </div>
 
+                {/* Workout Details */}
                 <div>
+                    {/* Categories */}
                     <div className="mb-4 flex flex-wrap gap-2">
                         {categories.map((item, index) => (
                             <span
@@ -86,14 +87,17 @@ export default async function WorkoutDetails({
                         ))}
                     </div>
 
+                    {/* Title */}
                     <h1 className="mb-4 text-3xl font-black uppercase leading-tight sm:text-4xl lg:text-5xl">
                         {workout.name}
                     </h1>
 
+                    {/* Description */}
                     <p className="mb-6 text-sm leading-6 text-[#9da3af] sm:text-base">
                         {workout.description}
                     </p>
 
+                    {/* Specs */}
                     <div className="mb-8 grid grid-cols-2 gap-3 sm:gap-4">
                         <div className="rounded-xl border border-[#272b32] bg-[#15181d] p-4">
                             <p className="mb-1 text-xs uppercase text-gray-500">
@@ -150,8 +154,9 @@ export default async function WorkoutDetails({
                         </div>
                     </div>
 
+                    {/* Instructions */}
                     <section className="mb-8">
-                        <h2 className="mb-4 text-xl font-black uppercase">
+                        <h2 className="mb-5 text-xl font-black uppercase tracking-tight">
                             Instructions
                         </h2>
 
@@ -159,10 +164,10 @@ export default async function WorkoutDetails({
                             {workout.instructions.map((step, index) => (
                                 <li
                                     key={`${step}-${index}`}
-                                    className="flex gap-3 text-sm leading-6 text-gray-300 sm:text-base"
+                                    className="flex items-start gap-3 text-sm leading-6 text-gray-300 sm:text-base"
                                 >
-                                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#ccff00] text-xs font-black text-black">
-                                        {index + 1}
+                                    <span className="shrink-0 font-semibold text-white">
+                                        {index + 1}.
                                     </span>
 
                                     <span>{step}</span>
@@ -171,6 +176,7 @@ export default async function WorkoutDetails({
                         </ol>
                     </section>
 
+                    {/* Actions */}
                     <WorkoutActions workout={workout} />
                 </div>
             </div>
