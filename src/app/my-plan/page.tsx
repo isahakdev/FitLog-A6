@@ -40,7 +40,7 @@ const MyPlanPage = () => {
         return () => clearTimeout(timer);
     }, []);
 
-    /* Dynamic metrics */
+    // Dynamic metrics
     const totalMinutes = plan.reduce(
         (total, workout) => total + workout.duration,
         0
@@ -51,10 +51,10 @@ const MyPlanPage = () => {
         0
     );
 
-    /* Current tab */
+    // Current tab
     const workouts = activeTab === "plan" ? plan : saved;
 
-    /* Dynamic sorting */
+    // Dynamic sorting
     const sortedWorkouts = [...workouts].sort((a, b) => {
         if (sortBy === "duration") {
             return a.duration - b.duration;
@@ -175,7 +175,7 @@ const MyPlanPage = () => {
                                 onChange={(event) =>
                                     setSortBy(event.target.value as SortOption)
                                 }
-                                className="h-10 rounded-xl border border-zinc-700 bg-transparent px-3 text-sm text-white outline-none focus:border-lime-400"
+                                className="h-10 rounded-xl border border-zinc-700 bg-[#111318] px-3 text-sm text-white outline-none transition focus:border-lime-400"
                             >
                                 <option
                                     value="duration"
@@ -376,14 +376,17 @@ const MyPlanPage = () => {
                                                     } else {
                                                         removeFromSaved(workout.id);
 
-                                                        toast.success("Removed from saved", {
-                                                            icon: (
-                                                                <CheckCircle2
-                                                                    size={20}
-                                                                    className="text-[#55d334]"
-                                                                />
-                                                            ),
-                                                        });
+                                                        toast.success(
+                                                            "Removed from saved",
+                                                            {
+                                                                icon: (
+                                                                    <CheckCircle2
+                                                                        size={20}
+                                                                        className="text-[#55d334]"
+                                                                    />
+                                                                ),
+                                                            }
+                                                        );
                                                     }
                                                 }}
                                                 className="flex h-9 w-9 items-center justify-center rounded-full text-zinc-400 transition hover:bg-red-500/10 hover:text-red-400"
