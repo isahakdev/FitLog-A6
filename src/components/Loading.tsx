@@ -1,12 +1,14 @@
 const Loading = () => {
     return (
-        <div className="flex min-h-[300px] flex-col items-center justify-center gap-4">
-            <div className="h-10 w-10 animate-spin rounded-full border-4 border-zinc-700 border-t-lime-400" />
+        <main className="flex min-h-screen items-center justify-center bg-[#0d0f12] px-4 text-white">
+            <div className="text-center">
+                <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-2 border-zinc-700 border-t-[#CCFF00]" />
 
-            <p className="text-sm font-medium tracking-wide text-zinc-400">
-                Loading workouts...
-            </p>
-        </div>
+                <p className="text-sm text-zinc-400">
+                    Loading...
+                </p>
+            </div>
+        </main>
     );
 };
 

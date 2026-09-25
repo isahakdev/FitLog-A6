@@ -4,6 +4,7 @@ import "./globals.css";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import RefreshLoader from "@/components/Refresh";
 import { PlanProvider } from "@/context/PlanContext";
 
 import { ToastContainer } from "react-toastify";
@@ -11,8 +12,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "FitLog - Workout Library",
-    template: "FitLog - %s",
+    default: "FitLog",
+    template: "%s | FitLog",
   },
   description: "Workout Library",
 };
@@ -26,6 +27,8 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <PlanProvider>
+          <RefreshLoader />
+
           <Navbar />
 
           {children}

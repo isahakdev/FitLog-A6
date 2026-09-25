@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
     Check,
     CheckCircle2,
@@ -12,7 +12,6 @@ import {
     X,
 } from "lucide-react";
 import { toast } from "react-toastify";
-
 import { usePlan } from "@/context/PlanContext";
 
 type SortOption = "duration" | "calories" | "rating";
@@ -30,15 +29,6 @@ const MyPlanPage = () => {
 
     const [activeTab, setActiveTab] = useState<ActiveTab>("plan");
     const [sortBy, setSortBy] = useState<SortOption>("duration");
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 300);
-
-        return () => clearTimeout(timer);
-    }, []);
 
     // Dynamic metrics
     const totalMinutes = plan.reduce(
@@ -54,17 +44,17 @@ const MyPlanPage = () => {
     // Current tab
     const workouts = activeTab === "plan" ? plan : saved;
 
-    // Dynamic sorting
+    // Higher value first
     const sortedWorkouts = [...workouts].sort((a, b) => {
         if (sortBy === "duration") {
-            return a.duration - b.duration;
+            return b.duration - a.duration;
         }
 
         if (sortBy === "calories") {
-            return a.caloriesBurned - b.caloriesBurned;
+            return b.caloriesBurned - a.caloriesBurned;
         }
 
-        return a.rating - b.rating;
+        return b.rating - a.rating;
     });
 
     return (
@@ -202,19 +192,8 @@ const MyPlanPage = () => {
                     )}
                 </div>
 
-                {/* Loading */}
-                {isLoading ? (
-                    <div className="flex min-h-[195px] items-center justify-center rounded-2xl border border-zinc-800 bg-[#1a1d23]">
-                        <div className="text-center">
-                            <div className="mx-auto mb-4 h-7 w-7 animate-spin rounded-full border-2 border-zinc-700 border-t-lime-400" />
-
-                            <p className="text-sm text-zinc-400">
-                                Loading workouts...
-                            </p>
-                        </div>
-                    </div>
-                ) : workouts.length === 0 ? (
-                    /* Empty State */
+                {/* Empty State */}
+                {workouts.length === 0 ? (
                     <div className="flex min-h-[195px] items-center justify-center rounded-2xl border border-dashed border-zinc-800 bg-[#1a1d23]">
                         <div className="px-5 text-center">
                             <h2 className="text-base font-black uppercase tracking-wide text-white sm:text-lg">
@@ -376,17 +355,14 @@ const MyPlanPage = () => {
                                                     } else {
                                                         removeFromSaved(workout.id);
 
-                                                        toast.success(
-                                                            "Removed from saved",
-                                                            {
-                                                                icon: (
-                                                                    <CheckCircle2
-                                                                        size={20}
-                                                                        className="text-[#55d334]"
-                                                                    />
-                                                                ),
-                                                            }
-                                                        );
+                                                        toast.success("Removed from saved", {
+                                                            icon: (
+                                                                <CheckCircle2
+                                                                    size={20}
+                                                                    className="text-[#55d334]"
+                                                                />
+                                                            ),
+                                                        });
                                                     }
                                                 }}
                                                 className="flex h-9 w-9 items-center justify-center rounded-full text-zinc-400 transition hover:bg-red-500/10 hover:text-red-400"
