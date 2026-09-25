@@ -1,5 +1,5 @@
-//layout root
 import type { Metadata } from "next";
+
 import "./globals.css";
 
 import Navbar from "@/components/Navbar";
@@ -10,7 +10,10 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const metadata: Metadata = {
-  title: "FitLog",
+  title: {
+    default: "FitLog - Workout Library",
+    template: "FitLog - %s",
+  },
   description: "Workout Library",
 };
 
@@ -31,7 +34,12 @@ export default function RootLayout({
 
           <ToastContainer
             position="top-right"
-            autoClose={2000}
+            autoClose={2500}
+            hideProgressBar
+            newestOnTop
+            closeOnClick
+            pauseOnHover
+            draggable
             theme="dark"
           />
         </PlanProvider>

@@ -30,7 +30,6 @@ const Navbar = () => {
                         alt="FitLog logo"
                         width={24}
                         height={24}
-                        className="h-6 w-6 object-contain"
                     />
 
                     <span className="text-[16px] font-bold tracking-[-0.3px] text-[#f2f2f2] sm:text-[17px]">

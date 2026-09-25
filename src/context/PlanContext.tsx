@@ -5,7 +5,7 @@ import {
     useContext,
     useEffect,
     useState,
-    ReactNode,
+    type ReactNode,
 } from "react";
 
 import { Workout } from "@/types/workout";
@@ -14,15 +14,19 @@ type PlanContextType = {
     plan: Workout[];
     saved: Workout[];
     completed: string[];
+
     addToPlan: (workout: Workout) => void;
     addToSaved: (workout: Workout) => void;
+
     removeFromPlan: (id: string) => void;
     removeFromSaved: (id: string) => void;
+
     markAsDone: (id: string) => void;
 };
 
 const PlanContext = createContext<PlanContextType | null>(null);
 
+// Get data from localStorage safely
 const getStoredData = <T,>(key: string, fallback: T): T => {
     if (typeof window === "undefined") {
         return fallback;
@@ -46,45 +50,61 @@ export const PlanProvider = ({
 }: {
     children: ReactNode;
 }) => {
-    const [plan, setPlan] = useState<Workout[]>(() =>
-        getStoredData<Workout[]>("fitlog-plan", [])
-    );
+    // Start with empty state to avoid hydration mismatch
+    const [plan, setPlan] = useState<Workout[]>([]);
+    const [saved, setSaved] = useState<Workout[]>([]);
+    const [completed, setCompleted] = useState<string[]>([]);
+    const [hydrated, setHydrated] = useState(false);
 
-    const [saved, setSaved] = useState<Workout[]>(() =>
-        getStoredData<Workout[]>("fitlog-saved", [])
-    );
+    // Load data from localStorage after client hydration
+    // This is intentional because localStorage is only available in the browser.
 
-    const [completed, setCompleted] = useState<string[]>(() =>
-        getStoredData<string[]>("fitlog-completed", [])
-    );
+    /* eslint-disable react-hooks/set-state-in-effect */
+    useEffect(() => {
+        setPlan(getStoredData<Workout[]>("fitlog-plan", []));
+        setSaved(getStoredData<Workout[]>("fitlog-saved", []));
+        setCompleted(
+            getStoredData<string[]>("fitlog-completed", [])
+        );
+
+        setHydrated(true);
+    }, []);
+    /* eslint-enable react-hooks/set-state-in-effect */
 
     // Save Today's Plan
     useEffect(() => {
+        if (!hydrated) return;
+
         localStorage.setItem(
             "fitlog-plan",
             JSON.stringify(plan)
         );
-    }, [plan]);
+    }, [plan, hydrated]);
 
     // Save Saved Workouts
     useEffect(() => {
+        if (!hydrated) return;
+
         localStorage.setItem(
             "fitlog-saved",
             JSON.stringify(saved)
         );
-    }, [saved]);
+    }, [saved, hydrated]);
 
     // Save Completed Workouts
     useEffect(() => {
+        if (!hydrated) return;
+
         localStorage.setItem(
             "fitlog-completed",
             JSON.stringify(completed)
         );
-    }, [completed]);
+    }, [completed, hydrated]);
 
     // Add to Today's Plan
     const addToPlan = (workout: Workout) => {
         setPlan((currentPlan) => {
+            // Prevent duplicate workout
             const exists = currentPlan.some(
                 (item) => item.id === workout.id
             );
@@ -101,6 +121,7 @@ export const PlanProvider = ({
     // Save for Later
     const addToSaved = (workout: Workout) => {
         setSaved((currentSaved) => {
+            // Prevent duplicate saved workout
             const exists = currentSaved.some(
                 (item) => item.id === workout.id
             );
@@ -121,6 +142,7 @@ export const PlanProvider = ({
             )
         );
 
+        // Also remove completed status
         setCompleted((currentCompleted) =>
             currentCompleted.filter(
                 (itemId) => itemId !== id
@@ -137,17 +159,15 @@ export const PlanProvider = ({
         );
     };
 
-    // Mark as Done
+    // Mark workout as Done
     const markAsDone = (id: string) => {
         setCompleted((currentCompleted) => {
+            // Don't add duplicate completed ID
             if (currentCompleted.includes(id)) {
                 return currentCompleted;
             }
 
-            return [
-                ...currentCompleted,
-                id,
-            ];
+            return [...currentCompleted, id];
         });
     };
 
@@ -169,6 +189,7 @@ export const PlanProvider = ({
     );
 };
 
+// Custom hook
 export const usePlan = () => {
     const context = useContext(PlanContext);
 

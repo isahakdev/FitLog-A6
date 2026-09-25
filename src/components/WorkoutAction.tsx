@@ -1,7 +1,6 @@
-//workoutcard 
 "use client";
 
-import { CalendarPlus, Bookmark } from "lucide-react";
+import { Bookmark, CalendarPlus } from "lucide-react";
 import { toast } from "react-toastify";
 
 import { usePlan } from "@/context/PlanContext";
@@ -30,7 +29,9 @@ const WorkoutActions = ({ workout }: Props) => {
         }
 
         if (planIsFull) {
-            toast.warning("Today's plan is full. Maximum 5 workouts allowed.");
+            toast.warning(
+                "Today's plan is full. Maximum 5 workouts allowed."
+            );
             return;
         }
 
@@ -52,11 +53,12 @@ const WorkoutActions = ({ workout }: Props) => {
         <div className="flex flex-col items-start gap-3 sm:flex-row">
             {/* Add to Today's Plan */}
             <button
+                type="button"
                 onClick={handlePlan}
                 disabled={planIsFull || isInPlan}
-                className="flex h-8 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-[#CCFF00] px-4 text-xs font-medium text-black transition-colors hover:bg-[#baff00] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#CCFF00]"
+                className="flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-[#ccff00] px-4 text-xs font-bold text-black transition-colors hover:bg-[#baff00] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#ccff00]"
             >
-                <CalendarPlus size={14} strokeWidth={2} />
+                <CalendarPlus size={15} strokeWidth={2} />
 
                 <span>
                     {isInPlan
@@ -69,11 +71,12 @@ const WorkoutActions = ({ workout }: Props) => {
 
             {/* Save for Later */}
             <button
+                type="button"
                 onClick={handleSaved}
                 disabled={isSaved}
-                className="flex h-8 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-[#303640] bg-transparent px-4 text-xs font-medium text-white transition-colors hover:bg-[#171b22] disabled:cursor-not-allowed disabled:opacity-40"
+                className="flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-[#303640] bg-transparent px-4 text-xs font-bold text-white transition-colors hover:bg-[#171b22] disabled:cursor-not-allowed disabled:opacity-40"
             >
-                <Bookmark size={14} strokeWidth={1.8} />
+                <Bookmark size={15} strokeWidth={1.8} />
 
                 <span>
                     {isSaved ? "Already saved" : "Save for later"}

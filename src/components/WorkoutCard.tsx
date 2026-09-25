@@ -1,7 +1,7 @@
-// workoutcard 
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { Clock3, Flame, Star } from "lucide-react";
+
 import { Workout } from "@/types/workout";
 
 type Props = {
@@ -16,26 +16,30 @@ const WorkoutCard = ({ workout }: Props) => {
             : [];
 
     return (
-        <Link href={`/workout/${workout.id}`}>
-            <div className="bg-[#111827] rounded-[24px] overflow-hidden border border-[#1F2937] hover:border-[#CCFF00] transition-all duration-300 cursor-pointer hover:-translate-y-1">
-
+        <Link
+            href={`/workout/${workout.id}`}
+            className="group block"
+        >
+            <div className="cursor-pointer overflow-hidden rounded-[24px] border border-[#1F2937] bg-[#111827] transition-all duration-300 hover:-translate-y-1 hover:border-[#CCFF00]">
                 {/* Image */}
-                <div className="relative w-full h-[190px]">
-                    <img
+                <div className="relative h-[190px] w-full">
+                    <Image
                         src={workout.image}
                         alt={workout.name}
-                        className="w-full h-full object-cover"
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                 </div>
 
                 {/* Content */}
                 <div className="p-5">
                     {/* Category Pills */}
-                    <div className="flex flex-wrap gap-2 mb-4">
+                    <div className="mb-4 flex flex-wrap gap-2">
                         {categories.map((item, index) => (
                             <span
-                                key={index}
-                                className="px-3 py-1 rounded-full bg-[#CCFF00] text-black text-[10px] font-bold uppercase tracking-wide"
+                                key={`${item}-${index}`}
+                                className="rounded-full bg-[#CCFF00] px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-black"
                             >
                                 {item}
                             </span>
@@ -43,18 +47,20 @@ const WorkoutCard = ({ workout }: Props) => {
                     </div>
 
                     {/* Title */}
-                    <h2 className="text-white text-xl font-bold uppercase leading-tight">
+                    <h2 className="text-xl font-bold uppercase leading-tight text-white">
                         {workout.name}
                     </h2>
 
                     {/* Equipment */}
-                    <p className="text-gray-400 text-sm mt-2">{workout.equipment}</p>
+                    <p className="mt-2 text-sm text-gray-400">
+                        {workout.equipment}
+                    </p>
 
                     {/* Divider */}
-                    <div className="border-t border-[#1F2937] my-4"></div>
+                    <div className="my-4 border-t border-[#1F2937]" />
 
                     {/* Stats */}
-                    <div className="flex items-center justify-between text-gray-400 text-xs">
+                    <div className="flex items-center justify-between text-xs text-gray-400">
                         <div className="flex items-center gap-1">
                             <Clock3 size={14} />
                             <span>{workout.duration} min</span>
