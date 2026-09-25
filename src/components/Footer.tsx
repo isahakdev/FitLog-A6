@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const Footer = () => {
   return (
-    <footer className="border-t border-zinc-800 bg-[#080a0d]">
+    <footer className="border-t border-[#17191d] bg-[#191c22]">
       <div
         className="
           mx-auto flex max-w-[1320px]
@@ -15,13 +15,19 @@ const Footer = () => {
         "
       >
         {/* Logo */}
-        <Image
-          src="/Images/logo.png"
-          alt="FitLog"
-          width={75}
-          height={24}
-          className="h-auto w-[75px] shrink-0 object-contain"
-        />
+        <div className="flex shrink-0 items-center gap-2">
+          <Image
+            src="/Images/logo.png"
+            alt="FitLog logo"
+            width={24}
+            height={24}
+            className="h-6 w-auto object-contain"
+          />
+
+          <span className="text-[16px] font-bold tracking-[-0.3px] text-[#f2f2f2] sm:text-[17px]">
+            FITLOG
+          </span>
+        </div>
 
         {/* Copyright */}
         <p
