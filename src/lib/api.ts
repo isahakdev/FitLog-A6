@@ -2,6 +2,11 @@ import { Workout } from "@/types/workout";
 
 const API = "https://api.abcz.workers.dev/api/fitlog";
 
+type ApiWorkout = Omit<Workout, "id" | "category"> & {
+  id: string | number;
+  muscleGroups: string[];
+};
+
 export async function getWorkouts(): Promise<Workout[]> {
   const res = await fetch(API, {
     cache: "no-store",
@@ -11,5 +16,11 @@ export async function getWorkouts(): Promise<Workout[]> {
     throw new Error("Failed to fetch workouts");
   }
 
-  return res.json();
+  const data: ApiWorkout[] = await res.json();
+
+  return data.map((workout) => ({
+    ...workout,
+    id: String(workout.id),
+    category: workout.muscleGroups,
+  }));
 }

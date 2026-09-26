@@ -3,17 +3,22 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+
 import {
     Check,
     CheckCircle2,
     Clock3,
     Flame,
+    RotateCcw,
     Star,
+    Trash2,
     X,
 } from "lucide-react";
+
 import { toast } from "react-toastify";
 
 import Loading from "@/components/Loading";
+import ProgressDashboard from "@/components/professional/progress/ProgressDashboard";
 import { usePlan } from "@/context/PlanContext";
 
 type SortOption = "duration" | "calories" | "rating";
@@ -26,48 +31,81 @@ const MyPlanPage = () => {
         completed,
         hydrated,
         markAsDone,
+        undoAsDone,
         removeFromPlan,
         removeFromSaved,
     } = usePlan();
 
-    const [activeTab, setActiveTab] = useState<ActiveTab>("plan");
-    const [sortBy, setSortBy] = useState<SortOption>("duration");
+    const [activeTab, setActiveTab] =
+        useState<ActiveTab>("plan");
 
-    // Show loading state before localStorage data is ready.
+    const [sortBy, setSortBy] =
+        useState<SortOption>("duration");
+
     if (!hydrated) {
         return <Loading />;
     }
 
-    // Dynamic metrics
     const totalMinutes = plan.reduce(
         (total, workout) => total + workout.duration,
         0
     );
 
     const totalCalories = plan.reduce(
-        (total, workout) => total + workout.caloriesBurned,
+        (total, workout) =>
+            total + workout.caloriesBurned,
         0
     );
 
-    // Current tab
-    const workouts = activeTab === "plan" ? plan : saved;
+    const workouts =
+        activeTab === "plan" ? plan : saved;
 
-    // Higher value first
-    const sortedWorkouts = [...workouts].sort((a, b) => {
-        if (sortBy === "duration") {
-            return b.duration - a.duration;
+    const sortedWorkouts = [...workouts].sort(
+        (a, b) => {
+            if (sortBy === "duration") {
+                return b.duration - a.duration;
+            }
+
+            if (sortBy === "calories") {
+                return (
+                    b.caloriesBurned -
+                    a.caloriesBurned
+                );
+            }
+
+            return b.rating - a.rating;
+        }
+    );
+
+    // Clear All — no confirmation popup
+    const handleClearAll = () => {
+        if (workouts.length === 0) {
+            return;
         }
 
-        if (sortBy === "calories") {
-            return b.caloriesBurned - a.caloriesBurned;
-        }
+        if (activeTab === "plan") {
+            workouts.forEach((workout) => {
+                removeFromPlan(workout.id);
+            });
 
-        return b.rating - a.rating;
-    });
+            toast.success(
+                "All workouts removed from today's plan"
+            );
+        } else {
+            workouts.forEach((workout) => {
+                removeFromSaved(workout.id);
+            });
+
+            toast.success(
+                "All saved workouts removed"
+            );
+        }
+    };
 
     return (
         <main className="min-h-screen bg-[#0d0f12] px-4 py-8 text-white sm:px-6 sm:py-9 lg:px-8">
             <div className="mx-auto max-w-[1060px]">
+
                 {/* Header */}
                 <div className="mb-8">
                     <h1 className="text-3xl font-black uppercase tracking-tight sm:text-4xl">
@@ -75,11 +113,12 @@ const MyPlanPage = () => {
                     </h1>
 
                     <p className="mt-2 text-sm text-zinc-400 sm:text-base">
-                        Cap of five lifts for today. Finish them, then load more.
+                        Cap of five lifts for today. Finish them,
+                        then load more.
                     </p>
                 </div>
 
-                {/* Metrics */}
+                {/* Stats */}
                 <div className="mb-9 grid grid-cols-1 overflow-hidden rounded-2xl border border-zinc-800 bg-[#1a1d23] sm:grid-cols-3">
                     <div className="border-b border-zinc-800 p-5 sm:border-b-0 sm:border-r sm:p-6">
                         <p className="text-xs text-zinc-400 sm:text-sm">
@@ -112,13 +151,21 @@ const MyPlanPage = () => {
                     </div>
                 </div>
 
+                {/* Progress */}
+                <div className="mb-10">
+                    <ProgressDashboard />
+                </div>
+
                 {/* Tabs + Sort */}
-                <div className="mb-7 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+                <div className="mb-7 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+
                     {/* Tabs */}
                     <div className="flex w-fit rounded-xl border border-zinc-800 bg-[#1a1d23] p-1">
                         <button
                             type="button"
-                            onClick={() => setActiveTab("plan")}
+                            onClick={() =>
+                                setActiveTab("plan")
+                            }
                             className={`rounded-lg px-4 py-2.5 text-sm font-medium transition ${activeTab === "plan"
                                     ? "bg-[#111318] text-lime-400"
                                     : "text-zinc-500 hover:text-white"
@@ -138,7 +185,9 @@ const MyPlanPage = () => {
 
                         <button
                             type="button"
-                            onClick={() => setActiveTab("saved")}
+                            onClick={() =>
+                                setActiveTab("saved")
+                            }
                             className={`rounded-lg px-4 py-2.5 text-sm font-medium transition ${activeTab === "saved"
                                     ? "bg-[#111318] text-lime-400"
                                     : "text-zinc-500 hover:text-white"
@@ -157,9 +206,10 @@ const MyPlanPage = () => {
                         </button>
                     </div>
 
-                    {/* Sort */}
+                    {/* Sort + Clear All */}
                     {workouts.length > 0 && (
-                        <div className="flex flex-col gap-1.5 sm:min-w-[220px]">
+                        <div className="flex w-full flex-col gap-2 sm:w-[220px]">
+
                             <label
                                 htmlFor="sort"
                                 className="text-sm text-white"
@@ -171,9 +221,12 @@ const MyPlanPage = () => {
                                 id="sort"
                                 value={sortBy}
                                 onChange={(event) =>
-                                    setSortBy(event.target.value as SortOption)
+                                    setSortBy(
+                                        event.target
+                                            .value as SortOption
+                                    )
                                 }
-                                className="h-10 rounded-xl border border-zinc-700 bg-[#111318] px-3 text-sm text-white outline-none transition focus:border-lime-400"
+                                className="h-10 w-full rounded-xl border border-zinc-700 bg-[#111318] px-3 text-sm text-white outline-none transition focus:border-lime-400"
                             >
                                 <option
                                     value="duration"
@@ -196,6 +249,19 @@ const MyPlanPage = () => {
                                     Rating
                                 </option>
                             </select>
+
+                            {/* Clear All */}
+                            <button
+                                type="button"
+                                onClick={handleClearAll}
+                                className="mt-1 flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-red-500/50 bg-red-500/10 text-xs font-bold text-red-400 transition hover:border-red-500 hover:bg-red-500/20 hover:text-red-300"
+                            >
+                                <Trash2 size={14} />
+
+                                {activeTab === "plan"
+                                    ? "Clear All"
+                                    : "Remove All"}
+                            </button>
                         </div>
                     )}
                 </div>
@@ -227,7 +293,9 @@ const MyPlanPage = () => {
                         {sortedWorkouts.map((workout) => {
                             const isCompleted =
                                 activeTab === "plan" &&
-                                completed.includes(workout.id);
+                                completed.includes(
+                                    workout.id
+                                );
 
                             return (
                                 <div
@@ -238,6 +306,7 @@ const MyPlanPage = () => {
                                         }`}
                                 >
                                     <div className="flex flex-col gap-4 md:flex-row md:items-center">
+
                                         {/* Image */}
                                         <div className="relative h-[110px] w-full shrink-0 overflow-hidden rounded-xl sm:h-[120px] md:w-[138px]">
                                             <Image
@@ -245,7 +314,9 @@ const MyPlanPage = () => {
                                                 alt={workout.name}
                                                 fill
                                                 sizes="(max-width: 768px) 100vw, 138px"
-                                                className={`object-cover ${isCompleted ? "opacity-60" : ""
+                                                className={`object-cover ${isCompleted
+                                                        ? "opacity-60"
+                                                        : ""
                                                     }`}
                                             />
 
@@ -266,8 +337,8 @@ const MyPlanPage = () => {
                                                 {workout.equipment}
                                             </p>
 
-                                            {/* Stats */}
                                             <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-zinc-300">
+
                                                 <span className="flex items-center gap-1.5">
                                                     <Clock3
                                                         size={14}
@@ -291,12 +362,13 @@ const MyPlanPage = () => {
                                                     />
                                                     {workout.rating}
                                                 </span>
+
                                             </div>
                                         </div>
 
                                         {/* Actions */}
                                         <div className="flex shrink-0 flex-wrap items-center gap-2 md:flex-nowrap">
-                                            {/* View Details */}
+
                                             <Link
                                                 href={`/workout/${workout.id}`}
                                                 className="rounded-full border border-zinc-400 px-4 py-2 text-xs font-semibold text-white transition hover:border-lime-400 hover:text-lime-400"
@@ -304,42 +376,61 @@ const MyPlanPage = () => {
                                                 View Details
                                             </Link>
 
-                                            {/* Mark as Done */}
                                             {activeTab === "plan" && (
-                                                <button
-                                                    type="button"
-                                                    disabled={isCompleted}
-                                                    onClick={() => {
-                                                        if (isCompleted) return;
+                                                <>
+                                                    {isCompleted ? (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                undoAsDone(
+                                                                    workout.id
+                                                                );
 
-                                                        markAsDone(workout.id);
+                                                                toast.info(
+                                                                    `${workout.name} marked as not completed`
+                                                                );
+                                                            }}
+                                                            className="flex items-center gap-1.5 rounded-full border border-amber-400/60 bg-amber-400/10 px-4 py-2 text-xs font-bold text-amber-300 transition hover:bg-amber-400/20"
+                                                        >
+                                                            <RotateCcw
+                                                                size={14}
+                                                            />
+                                                            Undo Done
+                                                        </button>
+                                                    ) : (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                markAsDone(
+                                                                    workout.id
+                                                                );
 
-                                                        toast.success(
-                                                            `${workout.name} marked as completed`,
-                                                            {
-                                                                icon: (
-                                                                    <CheckCircle2
-                                                                        size={20}
-                                                                        className="text-[#55d334]"
-                                                                    />
-                                                                ),
-                                                            }
-                                                        );
-                                                    }}
-                                                    className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition ${isCompleted
-                                                            ? "cursor-not-allowed bg-lime-400/20 text-lime-400"
-                                                            : "bg-lime-400 text-black hover:bg-lime-300"
-                                                        }`}
-                                                >
-                                                    <Check size={14} />
-
-                                                    {isCompleted
-                                                        ? "Completed"
-                                                        : "Mark as Done"}
-                                                </button>
+                                                                toast.success(
+                                                                    `${workout.name} marked as completed`,
+                                                                    {
+                                                                        icon: (
+                                                                            <CheckCircle2
+                                                                                size={
+                                                                                    20
+                                                                                }
+                                                                                className="text-[#55d334]"
+                                                                            />
+                                                                        ),
+                                                                    }
+                                                                );
+                                                            }}
+                                                            className="flex items-center gap-1.5 rounded-full bg-lime-400 px-4 py-2 text-xs font-bold text-black transition hover:bg-lime-300"
+                                                        >
+                                                            <Check
+                                                                size={14}
+                                                            />
+                                                            Mark as Done
+                                                        </button>
+                                                    )}
+                                                </>
                                             )}
 
-                                            {/* Remove */}
+                                            {/* Remove Single */}
                                             <button
                                                 type="button"
                                                 aria-label={
@@ -348,29 +439,40 @@ const MyPlanPage = () => {
                                                         : `Remove ${workout.name} from saved`
                                                 }
                                                 onClick={() => {
-                                                    if (activeTab === "plan") {
-                                                        removeFromPlan(workout.id);
+                                                    if (
+                                                        activeTab ===
+                                                        "plan"
+                                                    ) {
+                                                        removeFromPlan(
+                                                            workout.id
+                                                        );
 
                                                         toast.success(
                                                             "Removed from plan",
                                                             {
                                                                 icon: (
                                                                     <CheckCircle2
-                                                                        size={20}
+                                                                        size={
+                                                                            20
+                                                                        }
                                                                         className="text-[#55d334]"
                                                                     />
                                                                 ),
                                                             }
                                                         );
                                                     } else {
-                                                        removeFromSaved(workout.id);
+                                                        removeFromSaved(
+                                                            workout.id
+                                                        );
 
                                                         toast.success(
                                                             "Removed from saved",
                                                             {
                                                                 icon: (
                                                                     <CheckCircle2
-                                                                        size={20}
+                                                                        size={
+                                                                            20
+                                                                        }
                                                                         className="text-[#55d334]"
                                                                     />
                                                                 ),
@@ -382,6 +484,7 @@ const MyPlanPage = () => {
                                             >
                                                 <X size={18} />
                                             </button>
+
                                         </div>
                                     </div>
                                 </div>
